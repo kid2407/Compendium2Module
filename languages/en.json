@@ -1,3 +1,15 @@
 {
-    "MODULE.hello": "hello"
+  "compendium2module": {
+    "download": "Download as module",
+    "dialogue": {
+      "title": "Compendium2Module",
+      "content": "Do you want to download this compendium as a module?"
+    },
+    "errors": {
+      "moduleJsonFailed": "Failed to load required module files.",
+      "openCompendiumFailed": "Could not find or open compendium path.",
+      "compendiumLoadingFailed": "Failed to load compendium data for compendium %s.",
+      "unknown": "An unknown error occured!"
+    }
+  }
 }
