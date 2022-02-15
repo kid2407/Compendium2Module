@@ -1,5 +1,22 @@
+div.singleCompendiumEditor hr {
+    margin-top:    10px;
+    margin-bottom: 10px;
+}
+
 div.singleCompendiumEditor div.inputs {
     display:               grid;
     grid-template-columns: auto 1fr;
     grid-gap:              15px;
+}
+
+div.singleCompendiumEditor div.buttons > button {
+    width:        calc(50% - 5px);
+    float:        left;
+    margin-left:  0;
+    margin-right: 5px;
+}
+
+div.singleCompendiumEditor div.buttons > button[type="submit"] {
+    margin-right: 0;
+    margin-left:  5px;
 }

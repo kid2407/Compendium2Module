@@ -1,27 +1,28 @@
 {
     "compendium2module": {
-        "download": "Download as module",
+        "download": "Download as Module",
         "dialogue": {
             "title": "Compendium2Module",
             "content": "Do you want to download this compendium as a module?"
         },
         "errors": {
-            "moduleJsonFailed": "Failed to load required module files.",
-            "openCompendiumFailed": "Could not find or open compendium path.",
-            "compendiumLoadingFailed": "Failed to load compendium data for compendium %s.",
-            "unknown": "An unknown error occured!"
         },
         "edit": {
-            "title": "Configure Export",
+            "title": "Configure new module settings",
             "description": "Here you can modify the different aspects of the compendium module, like the id, display name or author. If no change is made, the default values will be used.",
             "fields": {
-                "id": "Module id",
-                "internalName": "Internal name",
-                "displayName": "Display name",
-                "author": "Author"
+                "id": "Module Id",
+                "internalName": "Internal Name",
+                "displayName": "Display Name",
+                "author": "Author",
+                "version": "Version"
             },
             "cancel": "Cancel",
             "submit": "Generate Module"
+        },
+        "json": {
+            "title": "Compendium module: <displayName>",
+            "description": "A module containing the exported <displayName> compendium."
         }
     }
 }

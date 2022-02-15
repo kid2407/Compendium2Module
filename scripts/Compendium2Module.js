@@ -1,5 +1,4 @@
 export class Compendium2Module {
-    static PATH_MODULE_JSON = 'modules/compendium2module/templates/module.json'
 
     /**
      * @param {string} moduleJSON
@@ -30,77 +29,38 @@ export class Compendium2Module {
      */
     static async generateRequiredFilesForCompendium(compendium, overrideData) {
         let metadata = compendium.metadata
-        let moduleJSON = null
         let moduleOptions = {
-            "id":           overrideData["id"].length > 0 ? overrideData["id"] : `generated-compendium-${Date.now()}`,
-            "displayName":  overrideData["displayName"].length > 0 ? overrideData["displayName"] : metadata.label,
-            "internalName": overrideData["internalName"].length > 0 ? overrideData["internalName"] : metadata.name,
-            "author":       overrideData["author"].length > 0 ? overrideData["author"] : game.user.name
+            "id":           overrideData.id.length > 0 ? overrideData.id : `generated-compendium-${Date.now()}`,
+            "displayName":  overrideData.displayName.length > 0 ? overrideData.displayName : metadata.label,
+            "internalName": overrideData.internalName.length > 0 ? overrideData.internalName : metadata.name,
+            "author":       overrideData.author.length > 0 ? overrideData.author : game.user.name,
+            "version":      overrideData.version.length > 0 ? overrideData.version : "1.0.0"
         }
 
-        try {
-            await FilePicker.browse("data", Compendium2Module.PATH_MODULE_JSON)
-            let request = await fetch(Compendium2Module.PATH_MODULE_JSON)
-            moduleJSON = await request.text()
-
-            moduleJSON = moduleJSON.replaceAll("<id>", moduleOptions["id"])
-            moduleJSON = moduleJSON.replaceAll("<displayName>", moduleOptions["displayName"])
-            moduleJSON = moduleJSON.replaceAll("<internalName>", moduleOptions["internalName"])
-            moduleJSON = moduleJSON.replaceAll("<user>", moduleOptions["author"])
-            moduleJSON = moduleJSON.replaceAll("<type>", metadata.type)
-            moduleJSON = moduleJSON.replaceAll("<version>", parseInt(game.version))
-        } catch (e) {
-            console.error(e)
-            ui.notifications.error(game.i18n.localize("compendium2module.errors.moduleJsonFailed"))
-            return
-        }
-
-        let dbContent = null
-        let compendiumPackage = metadata.package
-        let basePath = `${compendiumPackage}${metadata.path.charAt(0) === '.' ? metadata.path.substring(1) : metadata.path}`
-        let path = null
-        let foundPath = false
-
-        try {
-            try {
-                path = `modules/${basePath}`
-                await FilePicker.browse("data", path)
-                foundPath = true
-                console.log(`Found module path! ${path}`)
-            } catch (e) {
-                console.log("Not a module")
-            }
-
-            if (!foundPath) {
-                try {
-                    path = `systems/${basePath}`
-                    await FilePicker.browse("data", path)
-                    foundPath = true
-                    console.log(`Found system path! ${path}`)
-                } catch (e) {
-                    console.log("Not a system")
+        let moduleJSON = {
+            "name":                  moduleOptions.id,
+            "title":                 game.i18n.localize("compendium2module.json.title").replace("<displayName>", moduleOptions.displayName),
+            "description":           game.i18n.localize("compendium2module.json.description").replace("<displayName>", moduleOptions.displayName),
+            "version":               moduleOptions.version,
+            "library":               "false",
+            "manifestPlusVersion":   moduleOptions.version,
+            "minimumCoreVersion":    "9",
+            "compatibleCoreVersion": `${parseInt(game.version)}`,
+            "author":                moduleOptions.author,
+            "packs":                 [
+                {
+                    "entity": metadata.type,
+                    "label":  moduleOptions.displayName,
+                    "module": moduleOptions.id,
+                    "path":   `packs/${moduleOptions.id}.db`,
+                    "name":   moduleOptions.internalName
                 }
-            }
-
-            if (!foundPath) {
-                ui.notifications.error(game.i18n.localize("compendium2module.errors.openCompendiumFailed"))
-                return
-            }
-
-            let request = await fetch(path)
-            dbContent = await request.text()
-        } catch (e) {
-            console.error(e)
-            ui.notifications.error(game.i18n.localize("compendium2module.errors.compendiumLoadingFailed").replace("%s", metadata.label))
-            return
+            ]
         }
 
-        if (moduleJSON === null || dbContent === null || path === null) {
-            ui.notifications.error(game.i18n.localize("compendium2module.errors.unknown"))
-            console.log(moduleJSON, dbContent, compendium)
-            return
-        }
+        await compendium.getDocuments()
+        let dbContent = compendium.map(p => JSON.stringify(p)).join("\n")
 
-        await Compendium2Module.downloadZIP(moduleJSON, dbContent, moduleOptions)
+        await Compendium2Module.downloadZIP(JSON.stringify(moduleJSON, null, 4), dbContent, moduleOptions)
     }
 }

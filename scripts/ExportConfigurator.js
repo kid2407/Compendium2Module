@@ -21,7 +21,7 @@ export class ExportConfigurator extends FormApplication {
         options.id = `compendium2module-single-editor`
         options.template = `modules/compendium2module/templates/singleCompendium.hbs`
         options.width = 800
-        options.height = 600
+        options.height = "auto"
         options.resizable = true
 
         return options
@@ -30,11 +30,20 @@ export class ExportConfigurator extends FormApplication {
     // noinspection JSCheckFunctionSignatures
     getData(options = {}) {
         // noinspection JSValidateTypes
-        return {}
+        return {
+            "internal": this.pack.metadata.name,
+            "label":    this.pack.metadata.label,
+            "user":     game.user.name,
+            "version":  "1.0.0"
+        }
     }
 
     activateListeners(html) {
-        return super.activateListeners(html)
-        // onSubmit stuff
+        super.activateListeners(html)
+        let instance = this
+
+        html.find("button#cancel").on("click", async function () {
+            await instance.close()
+        })
     }
 }
