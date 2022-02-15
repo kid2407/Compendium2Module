@@ -1,17 +1,16 @@
 {
     "compendium2module": {
-        "download": "Download as Module",
+        "button": "Compendium 2 Module",
+        "download": "Save as module",
         "dialogue": {
-            "title": "Compendium2Module",
-            "content": "Do you want to download this compendium as a module?"
-        },
-        "errors": {
+            "title": "Compendium 2 Module",
+            "content": "Do you want to save this compendium as a module?"
         },
         "edit": {
-            "title": "Configure new module settings",
+            "title": "Compendium 2 Module: Simple Export",
             "description": "Here you can modify the different aspects of the compendium module, like the id, display name or author. If no change is made, the default values will be used.",
             "fields": {
-                "id": "Module Id",
+                "id": "Module ID",
                 "internalName": "Internal Name",
                 "displayName": "Display Name",
                 "author": "Author",
@@ -20,9 +19,17 @@
             "cancel": "Cancel",
             "submit": "Generate Module"
         },
+        "advanced": {
+            "title": "Compendium 2 Module: Avanced Export",
+            "description": "Here you can choose which compendiums to include in the exported module and adjust its settings. Tick the checkbox next to a compendium to include it in the export."
+        },
         "json": {
             "title": "Compendium module: <displayName>",
             "description": "A module containing the exported <displayName> compendium."
+        },
+        "info": {
+            "dataCollected": "Collected the required compendium data.",
+            "moduleFinished": "Finished generating the module!"
         }
     }
 }

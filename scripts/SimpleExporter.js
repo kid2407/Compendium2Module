@@ -1,6 +1,8 @@
-import {Compendium2Module} from "./Compendium2Module.js"
+import {
+    Compendium2Module
+} from "./Compendium2Module.js"
 
-export class ExportConfigurator extends FormApplication {
+export class SimpleExporter extends FormApplication {
     pack = null
 
     constructor(pack) {
@@ -9,6 +11,12 @@ export class ExportConfigurator extends FormApplication {
     }
 
     async _updateObject(event, formData) {
+        let button = $(".compendium2moduleDialog").find(".buttons > button[type='submit']")
+        let icon = button.find("> i")
+        icon.removeClass("fa-save")
+        icon.addClass("fa-cog fa-spin")
+        button.addClass("disabled")
+        button.attr("disabled", true)
         return await Compendium2Module.generateRequiredFilesForCompendium(this.pack, formData)
     }
 
@@ -32,9 +40,9 @@ export class ExportConfigurator extends FormApplication {
         // noinspection JSValidateTypes
         return {
             "internal": this.pack.metadata.name,
-            "label":    this.pack.metadata.label,
-            "user":     game.user.name,
-            "version":  "1.0.0"
+            "label": this.pack.metadata.label,
+            "user": game.user.name,
+            "version": "1.0.0"
         }
     }
 

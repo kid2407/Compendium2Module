@@ -1,7 +1,30 @@
-<div class="singleCompendiumEditor compendium2moduleDialog">
-    <p>{{localize "compendium2module.edit.description"}}</p>
+<div class="advancedCompendiumEditor compendium2moduleDialog">
+    <p>{{localize "compendium2module.advanced.description"}}</p>
     <hr>
     <form>
+        <div class="compendiumList">
+            <table>
+                <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Source</th>
+                    <th>Name</th>
+                    <th>Export</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#each this.packs}}
+                    <tr>
+                        <td>{{this.type}}</td>
+                        <td>{{this.package}}</td>
+                        <td>{{this.label}}</td>
+                        <td><input type="checkbox" name="compendium|{{this.package}}|{{this.name}}"></td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table>
+        </div>
+        <hr>
         <div class="inputs">
             <label for="id">{{localize "compendium2module.edit.fields.id"}}:</label>
             <input id="id" name="id" type="text" placeholder="generated-compendium-<timestamp>">
@@ -16,7 +39,8 @@
         </div>
         <hr>
         <div class="buttons">
-            <button id="cancel" type="button"><i class="fas fa-ban"></i>{{localize "compendium2module.edit.cancel"}}</button>
+            <button id="cancel" type="button"><i class="fas fa-ban"></i>{{localize "compendium2module.edit.cancel"}}
+            </button>
             <button type="submit"><i class="fas fa-check"></i>{{localize "compendium2module.edit.submit"}}</button>
         </div>
     </form>
