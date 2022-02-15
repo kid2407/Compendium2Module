@@ -1,0 +1,5 @@
+div.singleCompendiumEditor div.inputs {
+    display:               grid;
+    grid-template-columns: auto 1fr;
+    grid-gap:              15px;
+}
