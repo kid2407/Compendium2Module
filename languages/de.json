@@ -1,0 +1,45 @@
+{
+    "compendium2module": {
+        "button": "Compendium 2 Module",
+        "data": {
+            "generatedId": "generiertes-modul-",
+            "generatedName": "Generiertes Modul #"
+        },
+        "download": "Als Modul speichern",
+        "edit": {
+            "title": "Compendium 2 Module: Normaler Export",
+            "description": "Hier können die unterschiedlichen Aspekte des Moduls, wie ID, Anzeigename oder Ersteller angepasst werden. Leere Felder werden mit Standard-Werten gefüllt.",
+            "fields": {
+                "id": "Modul-ID",
+                "displayName": "Anzeigename",
+                "author": "Ersteller",
+                "version": "Version"
+            },
+            "cancel": "Abbrechen",
+            "submit": "Modul generieren"
+        },
+        "errors": {
+            "id": "The Modul-ID darf nur Kleinbuchstaben, Zahlen sowie Binde- und Unterstriche enthalten.",
+            "compendiums": "Du musst mindestens ein Kompendium auswählen."
+        },
+        "advanced": {
+            "title": "Compendium 2 Module: Erweiterter Export",
+            "description": "Hier können die Einstellungen für das Modul angepasst werden. Aktiviere die Checkbox bei einem Kompendium, um es in den Export mit aufzunehmen.",
+            "template": {
+                "type": "Typ",
+                "source": "Quelle",
+                "name": "Name",
+                "export": "Exportieren",
+                "toggleAll": "Alle umschalten"
+            }
+        },
+        "json": {
+            "title": "Kompendium-Modul:",
+            "description": "Ein Modul, welches die exportierten Kompendien enthält."
+        },
+        "info": {
+            "dataCollected": "Benötigte Daten erfolgreich gesammelt.",
+            "moduleFinished": "Modul erfolgreich generiert!"
+        }
+    }
+}

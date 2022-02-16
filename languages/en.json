@@ -1,17 +1,16 @@
 {
     "compendium2module": {
         "button": "Compendium 2 Module",
-        "download": "Save as module",
-        "dialogue": {
-            "title": "Compendium 2 Module",
-            "content": "Do you want to save this compendium as a module?"
+        "data": {
+            "generatedId": "generated-module-<timestamp>",
+            "generatedName": "Generated Module #<timestamp>"
         },
+        "download": "Save as module",
         "edit": {
             "title": "Compendium 2 Module: Simple Export",
             "description": "Here you can modify the different aspects of the compendium module, like the id, display name or author. If no change is made, the default values will be used.",
             "fields": {
                 "id": "Module ID",
-                "internalName": "Internal Name",
                 "displayName": "Display Name",
                 "author": "Author",
                 "version": "Version"
@@ -19,9 +18,20 @@
             "cancel": "Cancel",
             "submit": "Generate Module"
         },
+        "errors": {
+            "id": "The Module ID must only contain lowercase letters, numbers, dashes and underscores.",
+            "compendiums": "You must select at least one compendium."
+        },
         "advanced": {
-            "title": "Compendium 2 Module: Avanced Export",
-            "description": "Here you can choose which compendiums to include in the exported module and adjust its settings. Tick the checkbox next to a compendium to include it in the export."
+            "title": "Compendium 2 Module: Advanced Export",
+            "description": "Here you can choose which compendiums to include in the exported module and adjust its settings. Tick the checkbox next to a compendium to include it in the export.",
+            "template": {
+                "type": "Type",
+                "source": "Source",
+                "name": "Name",
+                "export": "Export",
+                "toggleAll": "Toggle All"
+            }
         },
         "json": {
             "title": "Compendium module: <displayName>",
