@@ -37,3 +37,9 @@ You can also combine any number of compendiums in one module, click on the "Down
 ![Compendium 2 Module Button](https://user-images.githubusercontent.com/13555681/154428036-5a025409-5e40-493c-9603-73eb50dfa523.png)
 
 ![Advanced Export Dialog](https://user-images.githubusercontent.com/13555681/154428038-47968ee4-5843-474c-b73e-3f8a28205c0c.png)
+
+### Ko-Fi
+
+If you have read this far and want to show some more appreciation: I have a Ko-Fi, should you consider what I'm doing worth a little something. Of course I do not expect nor require anyone to use it, but I'll leave it here in case someone wants to give:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/H2H7ALZTI)
