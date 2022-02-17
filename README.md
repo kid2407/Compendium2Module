@@ -10,21 +10,21 @@ A module allowing you to download compendiums as a module.
 
 Go to the compendium tab, right-click the desired compendium and choose the "Download as Module" option:
 
-![Open the context menu](https://user-images.githubusercontent.com/13555681/154092637-fbb55e47-4129-4105-b2fd-a63a89c0f4e8.png)
+![Open the context menu](https://user-images.githubusercontent.com/13555681/154428022-da72a690-c8e7-4042-b539-4cc9e642445d.png)
 
 In the dialog that opens you can modify various settings of the module before creating it. When everything is configured to your liking, hit the "Generate Module" button:
 
-![Change the settings you see fit](https://user-images.githubusercontent.com/13555681/154092634-fe25f597-5c5e-45c4-8a04-100e3c201d9d.png)
+![Change the settings you see fit](https://user-images.githubusercontent.com/13555681/154428025-82a4a791-14eb-4c45-abf3-51a8585327a0.png)
 
 Copy the content of the downloaded zip file into your modules directory:
 
-![Copy the directory from the zip to the module directory](https://user-images.githubusercontent.com/13555681/154092630-15cf543e-ad82-4f74-8061-97798f2dc00e.png)
+![Copy the directory from the zip to the module directory](https://user-images.githubusercontent.com/13555681/154428029-9da6d650-fee4-4561-adab-bba5dc464a1e.png)
 
 Restart Foundry and enable the now newly showing module:
 
-![The compendium appears in the module administration](https://user-images.githubusercontent.com/13555681/154092627-c3023b02-7a0b-4547-b759-e8e93015d84c.png)
+![The compendium appears in the module administration](https://user-images.githubusercontent.com/13555681/154428030-fd4c2f6b-94fd-4e6e-abe6-c1b2ef32b7f4.png)
 
-![The compendiums appears in the list of module, ready to be used](https://user-images.githubusercontent.com/13555681/154092614-170860ef-f8c6-4c57-b2dd-1667c6c733bd.png)
+![The compendiums appears in the list of module, ready to be used](https://user-images.githubusercontent.com/13555681/154428035-3c508ff2-8d90-4097-bd1b-0702edfe700e.png)
 
 Congratulations, your compendium is now accessible and ready to go:
 
@@ -33,5 +33,7 @@ Congratulations, your compendium is now accessible and ready to go:
 ### Combining multiple compendiums into one module
 
 You can also combine any number of compendiums in one module, click on the "Download multiple compendiums" button at the top of the compendium tab:
-(img)
-(img)
+
+![Compendium 2 Module Button](https://user-images.githubusercontent.com/13555681/154428036-5a025409-5e40-493c-9603-73eb50dfa523.png)
+
+![Advanced Export Dialog](https://user-images.githubusercontent.com/13555681/154428038-47968ee4-5843-474c-b73e-3f8a28205c0c.png)
