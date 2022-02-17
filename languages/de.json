@@ -34,7 +34,6 @@
             }
         },
         "json": {
-            "title": "Kompendium-Modul:",
             "description": "Ein Modul, welches die exportierten Kompendien enthält."
         },
         "info": {

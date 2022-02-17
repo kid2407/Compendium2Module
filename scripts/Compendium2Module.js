@@ -72,8 +72,8 @@ export class Compendium2Module {
         if (isSingleCompendium) {
             metadata = compendiums.metadata
             packs.push({
-                           "entity": metadata.type,
-                           "label":  metadata.displayName,
+                           "type":   metadata.type,
+                           "label":  metadata.label,
                            "module": moduleOptions.id,
                            "path":   `packs/${metadata.package}-${metadata.name}-${now}.db`,
                            "name":   `${metadata.package}-${metadata.name}-${now}`
@@ -86,8 +86,8 @@ export class Compendium2Module {
                 metadata = compendium.metadata
                 if (overrideData[`compendium|${metadata.package}|${metadata.name}`] === true) {
                     packs.push({
-                                   "entity": metadata.type,
-                                   "label":  metadata.displayName,
+                                   "type":   metadata.type,
+                                   "label":  metadata.label,
                                    "module": moduleOptions.id,
                                    "path":   `packs/${metadata.package}-${metadata.name}-${now}.db`,
                                    "name":   `${metadata.package}-${metadata.name}-${now}`
@@ -101,7 +101,7 @@ export class Compendium2Module {
 
         let moduleJSON = {
             "name":                  moduleOptions.id,
-            "title":                 game.i18n.localize("compendium2module.json.title").replace("<displayName>", moduleOptions.displayName),
+            "title":                 moduleOptions.displayName,
             "description":           game.i18n.localize("compendium2module.json.description").replace("<displayName>", moduleOptions.displayName),
             "version":               moduleOptions.version,
             "library":               "false",

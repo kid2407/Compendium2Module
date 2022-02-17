@@ -34,7 +34,6 @@
             }
         },
         "json": {
-            "title": "Compendium module: <displayName>",
             "description": "A module containing the exported <displayName> compendium."
         },
         "info": {
