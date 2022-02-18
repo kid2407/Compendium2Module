@@ -1,5 +1,10 @@
 {
     "compendium2module": {
+        "assets": {
+            "notFound": "Die Datei <filename> existiert nicht.",
+            "start": "Lade Assets.",
+            "finish": "Assets fertig geladen"
+        },
         "button": "Compendium 2 Module",
         "data": {
             "generatedId": "generiertes-modul-",
@@ -13,7 +18,8 @@
                 "id": "Modul-ID",
                 "displayName": "Anzeigename",
                 "author": "Ersteller",
-                "version": "Version"
+                "version": "Version",
+                "includeImages": "Bilder exportieren"
             },
             "cancel": "Abbrechen",
             "submit": "Modul generieren"

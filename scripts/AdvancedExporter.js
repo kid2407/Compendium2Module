@@ -9,10 +9,8 @@ export class AdvancedExporter extends FormApplication {
             icon.addClass("fa-cog fa-spin")
             button.addClass("disabled")
             button.attr("disabled", true)
-            await Compendium2Module.generateRequiredFilesForCompendium(game.packs, formData)
-            await this.close({force: true})
-        }
-        else {
+            return Compendium2Module.generateRequiredFilesForCompendium(game.packs, formData, this)
+        } else {
             event.preventDefault()
         }
     }
@@ -39,10 +37,10 @@ export class AdvancedExporter extends FormApplication {
         // noinspection JSValidateTypes
         return {
             "internal": game.i18n.localize("compendium2module.data.generatedId").replace("<timestamp>", now),
-            "label":    game.i18n.localize("compendium2module.data.generatedName").replace("<timestamp>", now),
-            "user":     game.user.name,
-            "version":  "1.0.0",
-            "packs":    game.packs.map(p => p.metadata).sort((a, b) => {
+            "label"   : game.i18n.localize("compendium2module.data.generatedName").replace("<timestamp>", now),
+            "user"    : game.user.name,
+            "version" : "1.0.0",
+            "packs"   : game.packs.map(p => p.metadata).sort((a, b) => {
                 if (a.type !== b.type) {
                     return a.type.localeCompare(b.type)
                 }

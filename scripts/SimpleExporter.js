@@ -1,6 +1,4 @@
-import {
-    Compendium2Module
-} from "./Compendium2Module.js"
+import {Compendium2Module} from "./Compendium2Module.js"
 
 export class SimpleExporter extends FormApplication {
     pack = null
@@ -17,7 +15,7 @@ export class SimpleExporter extends FormApplication {
         icon.addClass("fa-cog fa-spin")
         button.addClass("disabled")
         button.attr("disabled", true)
-        return await Compendium2Module.generateRequiredFilesForCompendium(this.pack, formData)
+        return await Compendium2Module.generateRequiredFilesForCompendium(this.pack, formData, this)
     }
 
     get title() {
@@ -40,9 +38,9 @@ export class SimpleExporter extends FormApplication {
         // noinspection JSValidateTypes
         return {
             "internal": this.pack.metadata.name,
-            "label": this.pack.metadata.label,
-            "user": game.user.name,
-            "version": "1.0.0"
+            "label"   : this.pack.metadata.label,
+            "user"    : game.user.name,
+            "version" : "1.0.0"
         }
     }
 

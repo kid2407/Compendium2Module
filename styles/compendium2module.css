@@ -9,6 +9,10 @@ div.singleCompendiumEditor div.inputs, div.advancedCompendiumEditor div.inputs {
     grid-gap:              15px;
 }
 
+div.singleCompendiumEditor #includeImages, div.advancedCompendiumEditor #includeImages {
+    margin-left: 0;
+}
+
 div.singleCompendiumEditor div.inputs > label, div.advancedCompendiumEditor div.inputs > label {
     font-size:  15px;
     margin-top: 3.5px;

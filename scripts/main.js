@@ -1,14 +1,10 @@
-import {
-    SimpleExporter
-} from "./SimpleExporter.js"
-import {
-    AdvancedExporter
-} from "./AdvancedExporter.js";
+import {SimpleExporter} from "./SimpleExporter.js"
+import {AdvancedExporter} from "./AdvancedExporter.js";
 
 Hooks.on('getCompendiumDirectoryEntryContext', async (html, context) => {
     context.push({
-        name: "compendium2module.download",
-        icon: "<i class='fas fa-save'></i>",
+        name    : "compendium2module.download",
+        icon    : "<i class='fas fa-save'></i>",
         callback: li => {
             if (!game.users.current.isGM) {
                 return false
