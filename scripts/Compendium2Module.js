@@ -97,6 +97,12 @@ export class Compendium2Module {
             if (!imagePaths.includes(path)) {
                 imagePaths.push(path)
             }
+            if (compendiumEntry.data.type === "character") {
+                path = compendiumEntry.data.token.img
+                if (!imagePaths.includes(path)) {
+                    imagePaths.push(path)
+                }
+            }
         }
 
         return imagePaths
@@ -116,6 +122,9 @@ export class Compendium2Module {
             let json = d.toJSON()
             if (includeImages) {
                 json.img = `modules/${moduleId}/assets/${json.img}`
+                if (json.type === "character") {
+                    json.token.img = `modules/${moduleId}/assets/${json.token.img}`
+                }
             }
             documentData.push(json)
         })
