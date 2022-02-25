@@ -55,7 +55,7 @@ export class Compendium2Module {
             let request
             let imageContent
 
-            await this.asyncForEach(dbData.images, async (image) => {
+            await this.asyncForEach(dbData.images.filter((value => {try{new URL(value); return false;} catch (e){return true;}})), async (image) => {
                 try {
                     request = await fetch(image)
                     if (!request.ok) {
@@ -121,9 +121,17 @@ export class Compendium2Module {
         documents.forEach(d => {
             let json = d.toJSON()
             if (includeImages) {
-                json.img = `modules/${moduleId}/assets/${json.img}`
+                try {
+                    new URL(json.img)
+                } catch (e){
+                    json.img = `modules/${moduleId}/assets/${json.img}`
+                }
                 if (json.type === "character") {
-                    json.token.img = `modules/${moduleId}/assets/${json.token.img}`
+                    try {
+                        new URL(json.img)
+                    } catch (e){
+                        json.token.img = `modules/${moduleId}/assets/${json.token.img}`
+                    }
                 }
             }
             documentData.push(json)
