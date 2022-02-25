@@ -1,5 +1,7 @@
 export class Compendium2Module {
 
+    static IS_FOUNDRY_V8 = null;
+
     /**
      * Async for each loop
      *
@@ -169,13 +171,23 @@ export class Compendium2Module {
             metadata = compendiums.metadata
             packName = `${metadata.package}-${metadata.name}-${now}`
 
-            packs.push({
-                "type"  : metadata.type,
-                "label" : metadata.label,
-                "module": moduleOptions.id,
-                "path"  : `packs/${packName}.db`,
-                "name"  : `${packName}`
-            })
+            if (this.IS_FOUNDRY_V8){
+                packs.push({
+                   "entity": metadata.type,
+                   "label":  metadata.label,
+                   "module": moduleOptions.id,
+                   "path":   `packs/${packName}.db`,
+                   "name":   `${packName}`
+                })
+            } else {
+                packs.push({
+                   "type"  : metadata.type,
+                   "label" : metadata.label,
+                   "module": moduleOptions.id,
+                   "path"  : `packs/${packName}.db`,
+                   "name"  : `${packName}`
+                })
+            }
             documents = await compendiums.getDocuments()
             transformedData = Compendium2Module.transformCompendiumData(documents, moduleOptions.id, moduleOptions.includeImages, images)
             images = transformedData.images
@@ -186,13 +198,23 @@ export class Compendium2Module {
                 if (overrideData[`compendium|${metadata.package}|${metadata.name}`] === true) {
                     packName = `${metadata.package}-${metadata.name}-${now}`
 
-                    packs.push({
-                        "type"  : metadata.type,
-                        "label" : metadata.label,
-                        "module": moduleOptions.id,
-                        "path"  : `packs/${packName}.db`,
-                        "name"  : `${packName}`
-                    })
+                    if (this.IS_FOUNDRY_V8){
+                        packs.push({
+                            "entity"  : metadata.type,
+                            "label" : metadata.label,
+                            "module": moduleOptions.id,
+                            "path"  : `packs/${packName}.db`,
+                            "name"  : `${packName}`
+                        })
+                    } else {
+                        packs.push({
+                            "type"  : metadata.type,
+                            "label" : metadata.label,
+                            "module": moduleOptions.id,
+                            "path"  : `packs/${packName}.db`,
+                            "name"  : `${packName}`
+                        })
+                    }
 
                     documents = await compendium.getDocuments()
                     transformedData = Compendium2Module.transformCompendiumData(documents, moduleOptions.id, moduleOptions.includeImages, images)
