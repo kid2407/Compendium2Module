@@ -63,7 +63,7 @@ export class Compendium2Module {
                         return
                     }
                     imageContent = await request.blob()
-                    assets.file(image, imageContent)
+                    assets.file(decodeURI(image), imageContent)
                 } catch (e) {
                     ui.notifications.warn(game.i18n.localize("compendium2module.assets.notFound").replace("<filename>", image))
                 }
