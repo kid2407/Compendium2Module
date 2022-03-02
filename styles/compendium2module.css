@@ -1,35 +1,61 @@
-div.singleCompendiumEditor hr, div.advancedCompendiumEditor hr {
+div.compendium2moduleDialog hr {
     margin-top:    10px;
     margin-bottom: 10px;
 }
 
-div.singleCompendiumEditor div.inputs, div.advancedCompendiumEditor div.inputs {
+div.compendium2moduleDialog div.inputs {
     display:               grid;
     grid-template-columns: auto 1fr;
     grid-gap:              15px;
 }
 
-div.singleCompendiumEditor #includeImages, div.advancedCompendiumEditor #includeImages {
+div.compendium2moduleDialog input[type="checkbox"] {
     margin-left: 0;
 }
 
-div.singleCompendiumEditor div.inputs > label, div.advancedCompendiumEditor div.inputs > label {
+div.compendium2moduleDialog div.inputs > label {
     font-size:  15px;
     margin-top: 3.5px;
 }
 
-div.singleCompendiumEditor div.buttons > button, div.advancedCompendiumEditor div.buttons > button {
+div.compendium2moduleDialog div.buttons {
+    display: inline-block;
+    width:   100%;
+}
+
+div.compendium2moduleDialog div.buttons > button {
     width:        calc(50% - 5px);
     float:        left;
     margin-left:  0;
     margin-right: 5px;
 }
 
-div.singleCompendiumEditor div.buttons > button[type="submit"], div.advancedCompendiumEditor div.buttons > button[type="submit"] {
+div.compendium2moduleDialog div.buttons > button[type="submit"] {
     margin-right: 0;
     margin-left:  5px;
 }
 
 div.advancedCompendiumEditor table tbody td {
     text-align: center;
+}
+
+div.manifest {
+    float:                 left;
+    display:               grid;
+    grid-template-columns: auto 1fr auto;
+    grid-column-gap:       10px;
+    width:                 100%;
+}
+
+div.manifest > label {
+    vertical-align: middle;
+    line-height:    34px;
+}
+
+div.manifest > label, div.manifest > button {
+    font-size: 15px;
+}
+
+input#manifestLink {
+    height: 34px;
 }

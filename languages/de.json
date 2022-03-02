@@ -19,9 +19,11 @@
                 "displayName": "Anzeigename",
                 "author": "Ersteller",
                 "version": "Version",
-                "includeImages": "Bilder exportieren"
+                "includeImages": "Bilder exportieren",
+                "saveToFile": "Manifest-Link generieren"
             },
             "cancel": "Abbrechen",
+            "close": "Schließen",
             "submit": "Modul generieren"
         },
         "errors": {

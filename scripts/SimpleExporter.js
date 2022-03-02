@@ -15,7 +15,7 @@ export class SimpleExporter extends FormApplication {
         icon.addClass("fa-cog fa-spin")
         button.addClass("disabled")
         button.attr("disabled", true)
-        return await Compendium2Module.generateRequiredFilesForCompendium(this.pack, formData, this)
+        return await Compendium2Module.generateRequiredFilesForCompendium([this.pack], true, formData, this)
     }
 
     get title() {
@@ -29,6 +29,7 @@ export class SimpleExporter extends FormApplication {
         options.width = 800
         options.height = "auto"
         options.resizable = true
+        options.closeOnSubmit = false
 
         return options
     }
@@ -38,9 +39,9 @@ export class SimpleExporter extends FormApplication {
         // noinspection JSValidateTypes
         return {
             "internal": this.pack.metadata.name,
-            "label"   : this.pack.metadata.label,
-            "user"    : game.user.name,
-            "version" : "1.0.0"
+            "label":    this.pack.metadata.label,
+            "user":     game.user.name,
+            "version":  "1.0.0"
         }
     }
 
@@ -50,6 +51,10 @@ export class SimpleExporter extends FormApplication {
 
         html.find("button#cancel").on("click", async function () {
             await instance.close()
+        })
+
+        html.find("button.copyToClipboard").on("click", async (event) => {
+            await Compendium2Module.copyToClipboard(event)
         })
     }
 }

@@ -13,11 +13,19 @@
             <input id="version" name="version" type="text" placeholder="{{this.version}}">
             <label for="includeImages">{{localize "compendium2module.edit.fields.includeImages"}}:</label>
             <input id="includeImages" name="includeImages" type="checkbox">
+            <label for="saveToFile">{{localize "compendium2module.edit.fields.saveToFile"}}:</label>
+            <input id="saveToFile" name="saveToFile" type="checkbox">
         </div>
         <hr>
         <div class="buttons">
             <button id="cancel" type="button"><i class="fas fa-ban"></i>{{localize "compendium2module.edit.cancel"}}</button>
-            <button type="submit"><i class="fas fa-check"></i>{{localize "compendium2module.edit.submit"}}</button>
+            <button id="generate" type="submit"><i class="fas fa-check"></i>{{localize "compendium2module.edit.submit"}}</button>
+        </div>
+        <hr>
+        <div class="manifest">
+            <label for="manifestLink">Manifest link:</label>
+            <input id="manifestLink" name="manifestLink" class="manifestLink disabled" type="text" disabled>
+            <button type="button" class="copyToClipboard"><i class="fas fa-copy"></i>Copy</button>
         </div>
     </form>
 </div>

@@ -2,6 +2,7 @@ import {Compendium2Module} from "./Compendium2Module.js"
 
 export class AdvancedExporter extends FormApplication {
     async _updateObject(event, formData) {
+        event.preventDefault()
         if (Compendium2Module.validateFields(formData)) {
             let button = $(".compendium2moduleDialog").find(".buttons > button[type='submit']")
             let icon = button.find("> i")
@@ -9,9 +10,7 @@ export class AdvancedExporter extends FormApplication {
             icon.addClass("fa-cog fa-spin")
             button.addClass("disabled")
             button.attr("disabled", true)
-            return Compendium2Module.generateRequiredFilesForCompendium(game.packs, formData, this)
-        } else {
-            event.preventDefault()
+            return Compendium2Module.generateRequiredFilesForCompendium(game.packs, false, formData, this)
         }
     }
 
@@ -37,10 +36,10 @@ export class AdvancedExporter extends FormApplication {
         // noinspection JSValidateTypes
         return {
             "internal": game.i18n.localize("compendium2module.data.generatedId").replace("<timestamp>", now),
-            "label"   : game.i18n.localize("compendium2module.data.generatedName").replace("<timestamp>", now),
-            "user"    : game.user.name,
-            "version" : "1.0.0",
-            "packs"   : game.packs.map(p => p.metadata).sort((a, b) => {
+            "label":    game.i18n.localize("compendium2module.data.generatedName").replace("<timestamp>", now),
+            "user":     game.user.name,
+            "version":  "1.0.0",
+            "packs":    game.packs.map(p => p.metadata).sort((a, b) => {
                 if (a.type !== b.type) {
                     return a.type.localeCompare(b.type)
                 }
@@ -61,6 +60,10 @@ export class AdvancedExporter extends FormApplication {
         html.find("a#toggleAllCompendiums").on("click", async (event) => {
             let table = $(event.target).closest("table")
             checkboxes.prop("checked", table.find("input:checkbox:checked").length !== checkboxCount)
+        })
+
+        html.find("button.copyToClipboard").on("click", async (event) => {
+            await Compendium2Module.copyToClipboard(event)
         })
     }
 }

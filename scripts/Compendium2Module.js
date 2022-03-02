@@ -1,6 +1,6 @@
 export class Compendium2Module {
 
-    static IS_FOUNDRY_V8 = null;
+    static IS_FOUNDRY_V8 = false
 
     /**
      * Async for each loop
@@ -40,8 +40,9 @@ export class Compendium2Module {
      * @param {string} moduleJSON The content for the module.json file
      * @param {{data: {string: string}, images: string[]}} dbData The data for the compendiums that are included with the module
      * @param {FormApplication} formApplication
+     * @param {boolean} saveToFile If the module should be saved to the local file system
      */
-    static async downloadZIP(moduleId, moduleJSON, dbData, formApplication) {
+    static async generateZIP(moduleId, moduleJSON, dbData, formApplication, saveToFile) {
         let zip = new JSZip()
         let parentDir = zip.folder(moduleId)
         parentDir.file("module.json", moduleJSON)
@@ -57,7 +58,14 @@ export class Compendium2Module {
             let request
             let imageContent
 
-            await this.asyncForEach(dbData.images.filter((value => {try{new URL(value); return false;} catch (e){return true;}})), async (image) => {
+            await this.asyncForEach(dbData.images.filter((value => {
+                try {
+                    new URL(value)
+                    return false
+                } catch (e) {
+                    return true
+                }
+            })), async (image) => {
                 try {
                     request = await fetch(image)
                     if (!request.ok) {
@@ -76,13 +84,44 @@ export class Compendium2Module {
 
         zip.generateAsync(
             {
-                type    : "blob",
+                type:     "blob",
                 platform: "UNIX"
             }
-        ).then(content => {
-            saveDataToFile(content, "application/zip", `${moduleId}.zip`)
+        ).then(async content => {
+            if (saveToFile) {
+                let moduleDir = `compendium2module/${moduleId}`
+
+                try {
+                    await FilePicker.createDirectory('data', 'compendium2module')
+                } catch (e) {
+                    // Ignore
+                }
+
+                try {
+                    await FilePicker.createDirectory('data', `compendium2module/${moduleId}`)
+                } catch (e) {
+                    // Ignore
+                }
+
+                await FilePicker.upload('data', moduleDir, new File([new Blob([moduleJSON], {type: "application/json"})], "module.json"), {}, {notify: false})
+                await FilePicker.upload('data', moduleDir, new File([new Blob([content], {type: "application/zip"})], "module-zip.txt"), {}, {notify: false})
+
+                let dialog = $('.compendium2moduleDialog')
+                let manifestLink = dialog.find('input.manifestLink')
+                manifestLink.val(new URL(`${window.location.origin}/compendium2module/${moduleId}/module.json`).href)
+                dialog.find('button#cancel').html(`<i class='fas fa-ban'></i>${game.i18n.localize('compendium2module.edit.close')}`)
+                let generateButton = dialog.find('button#generate')
+                let generateButtonIcon = generateButton.find('i')
+                generateButtonIcon.addClass("fa-save")
+                generateButtonIcon.removeClass("fa-cog fa-spin")
+                generateButton.removeClass("disabled")
+                generateButton.attr("disabled", false)
+            }
+            else {
+                saveDataToFile(content, "application/zip", `${moduleId}.zip`)
+                formApplication.close({force: true}).then()
+            }
             ui.notifications.info(game.i18n.localize("compendium2module.info.moduleFinished"))
-            formApplication.close({force: true}).then()
         })
     }
 
@@ -125,13 +164,13 @@ export class Compendium2Module {
             if (includeImages) {
                 try {
                     new URL(json.img)
-                } catch (e){
+                } catch (e) {
                     json.img = `modules/${moduleId}/assets/${json.img}`
                 }
                 if (json.type === "character") {
                     try {
                         new URL(json.img)
-                    } catch (e){
+                    } catch (e) {
                         json.token.img = `modules/${moduleId}/assets/${json.token.img}`
                     }
                 }
@@ -140,34 +179,46 @@ export class Compendium2Module {
         })
 
         return {
-            "data"  : documentData.map(p => JSON.stringify(p)).join("\n"),
+            "data":   documentData.map(p => JSON.stringify(p)).join("\n"),
             "images": images
         }
     }
 
     // noinspection JSCheckFunctionSignatures
     /**
-     * @param {CompendiumCollection[]|CompendiumCollection} compendiums
+     * @param {CompendiumCollection[]} compendiums
+     * @param {boolean} isSingleCompendium
      * @param {Object} overrideData
      * @param {FormApplication} formApplication
      * @returns {Promise<void>}
      */
-    static async generateRequiredFilesForCompendium(compendiums, overrideData, formApplication) {
+    static async generateRequiredFilesForCompendium(compendiums, isSingleCompendium, overrideData, formApplication) {
         let now = Date.now().toString()
-        let isSingleCompendium = compendiums instanceof CompendiumCollection
 
         let moduleOptions = {
-            "id"           : overrideData.id.length > 0 ? overrideData.id : game.i18n.localize("compendium2module.data.generatedId").replace("<timestamp>", now),
-            "author"       : overrideData.author.length > 0 ? overrideData.author : game.user.name,
-            "version"      : overrideData.version.length > 0 ? overrideData.version : "1.0.0",
-            "displayName"  : overrideData.displayName.length > 0 ? overrideData.displayName : (isSingleCompendium ? compendiums.metadata.label : `Generated Module #${now}`),
-            "includeImages": overrideData.includeImages
+            "id":            overrideData.id.length > 0 ? overrideData.id : game.i18n.localize("compendium2module.data.generatedId").replace("<timestamp>", now),
+            "author":        overrideData.author.length > 0 ? overrideData.author : game.user.name,
+            "version":       overrideData.version.length > 0 ? overrideData.version : "1.0.0",
+            "displayName":   overrideData.displayName.length > 0 ? overrideData.displayName : (isSingleCompendium ? compendiums[0].metadata.label : `Generated Module #${now}`),
+            "includeImages": overrideData.includeImages,
+            "saveToFile":    overrideData.saveToFile
+        }
+
+        let manifestURL, downloadURL
+
+        if (moduleOptions.saveToFile) {
+            manifestURL = (new URL(`${window.location.origin}/compendium2module/${moduleOptions.id}/module.json`)).href
+            downloadURL = (new URL(`${window.location.origin}/compendium2module/${moduleOptions.id}/module-zip.txt`)).href
+        }
+        else {
+            manifestURL = ""
+            downloadURL = ""
         }
 
         let packs = []
         let dbData = {
             "images": [],
-            "data"  : {}
+            "data":   {}
         }
         let metadata
         let documents
@@ -175,74 +226,50 @@ export class Compendium2Module {
         let transformedData
         let packName
 
-        if (isSingleCompendium) {
-            metadata = compendiums.metadata
-            packName = `${metadata.package}-${metadata.name}-${now}`
+        for (let compendium of compendiums) {
+            metadata = compendium.metadata
+            if (isSingleCompendium || overrideData[`compendium|${metadata.package}|${metadata.name}`] === true) {
+                packName = `${metadata.package}-${metadata.name}-${now}`
 
-            if (this.IS_FOUNDRY_V8){
-                packs.push({
-                   "entity": metadata.type,
-                   "label":  metadata.label,
-                   "module": moduleOptions.id,
-                   "path":   `packs/${packName}.db`,
-                   "name":   `${packName}`
-                })
-            } else {
-                packs.push({
-                   "type"  : metadata.type,
-                   "label" : metadata.label,
-                   "module": moduleOptions.id,
-                   "path"  : `packs/${packName}.db`,
-                   "name"  : `${packName}`
-                })
-            }
-            documents = await compendiums.getDocuments()
-            transformedData = Compendium2Module.transformCompendiumData(documents, moduleOptions.id, moduleOptions.includeImages, images)
-            images = transformedData.images
-            dbData.data[packName] = transformedData.data
-        } else {
-            for (let compendium of compendiums) {
-                metadata = compendium.metadata
-                if (overrideData[`compendium|${metadata.package}|${metadata.name}`] === true) {
-                    packName = `${metadata.package}-${metadata.name}-${now}`
-
-                    if (this.IS_FOUNDRY_V8){
-                        packs.push({
-                            "entity"  : metadata.type,
-                            "label" : metadata.label,
-                            "module": moduleOptions.id,
-                            "path"  : `packs/${packName}.db`,
-                            "name"  : `${packName}`
-                        })
-                    } else {
-                        packs.push({
-                            "type"  : metadata.type,
-                            "label" : metadata.label,
-                            "module": moduleOptions.id,
-                            "path"  : `packs/${packName}.db`,
-                            "name"  : `${packName}`
-                        })
-                    }
-
-                    documents = await compendium.getDocuments()
-                    transformedData = Compendium2Module.transformCompendiumData(documents, moduleOptions.id, moduleOptions.includeImages, images)
-                    images = transformedData.images
-                    dbData.data[packName] = transformedData.data
+                if (this.IS_FOUNDRY_V8) {
+                    packs.push({
+                                   "entity": metadata.type,
+                                   "label":  metadata.label,
+                                   "module": moduleOptions.id,
+                                   "path":   `packs/${packName}.db`,
+                                   "name":   `${packName}`
+                               })
                 }
+                else {
+                    packs.push({
+                                   "type":   metadata.type,
+                                   "label":  metadata.label,
+                                   "module": moduleOptions.id,
+                                   "path":   `packs/${packName}.db`,
+                                   "name":   `${packName}`
+                               })
+                }
+
+                documents = await compendium.getDocuments()
+                transformedData = Compendium2Module.transformCompendiumData(documents, moduleOptions.id, moduleOptions.includeImages, images)
+                images = transformedData.images
+                dbData.data[packName] = transformedData.data
             }
         }
 
         let moduleJSON = {
-            "name"                 : moduleOptions.id,
-            "title"                : moduleOptions.displayName,
-            "description"          : game.i18n.localize("compendium2module.json.description").replace("<displayName>", moduleOptions.displayName),
-            "version"              : moduleOptions.version,
-            "library"              : "false",
-            "manifestPlusVersion"  : moduleOptions.version,
-            "minimumCoreVersion"   : "9",
+            "name":                  moduleOptions.id,
+            "title":                 moduleOptions.displayName,
+            "description":           game.i18n.localize("compendium2module.json.description").replace("<displayName>", moduleOptions.displayName),
+            "version":               moduleOptions.version,
+            "library":               "false",
+            "manifestPlusVersion":   moduleOptions.version,
+            "minimumCoreVersion":    "9",
             "compatibleCoreVersion": `${parseInt(game.version)}`,
-            "author"               : moduleOptions.author,
-            "packs"                : packs
+            "author":                moduleOptions.author,
+            "packs":                 packs,
+            "manifest":              manifestURL,
+            "download":              downloadURL
         }
 
         dbData.images = images
@@ -250,6 +277,34 @@ export class Compendium2Module {
         ui.notifications.info(game.i18n.localize("compendium2module.info.dataCollected"))
 
         // noinspection JSCheckFunctionSignatures
-        return Compendium2Module.downloadZIP(moduleOptions.id, JSON.stringify(moduleJSON, null, 4), dbData, formApplication)
+        return Compendium2Module.generateZIP(moduleOptions.id, JSON.stringify(moduleJSON, null, 4), dbData, formApplication, moduleOptions.saveToFile)
+    }
+
+    /**
+     * @param {Event} event
+     */
+    static async copyToClipboard(event) {
+        let linkElement = $(event.target).parent().find("input#manifestLink")
+        if (navigator.clipboard) {
+            await navigator.clipboard.writeText(linkElement.val())
+            ui.notifications.info("Copied to clipboard!")
+        }
+        else {
+            linkElement.focus()
+            linkElement.select()
+            try {
+                // noinspection JSDeprecatedSymbols
+                let success = document.execCommand("copy")
+                if (success) {
+                    ui.notifications.info("Copied to clipboard!")
+                }
+                else {
+                    ui.notifications.error("Failed to copy to clipboard!")
+                }
+            } catch (e) {
+                console.error(e)
+                ui.notifications.error("Failed to copy to clipboard!")
+            }
+        }
     }
 }

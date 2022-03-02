@@ -19,9 +19,11 @@
                 "displayName": "Display Name",
                 "author": "Author",
                 "version": "Version",
-                "includeImages": "Include Images"
+                "includeImages": "Include Images",
+                "saveToFile": "Generate manifest link"
             },
             "cancel": "Cancel",
+            "close": "Close",
             "submit": "Generate Module"
         },
         "errors": {
