@@ -1,11 +1,5 @@
 import {SimpleExporter} from "./SimpleExporter.js"
 import {AdvancedExporter} from "./AdvancedExporter.js"
-import {Compendium2Module} from "./Compendium2Module.js"
-
-Hooks.once('ready', async () => {
-    // noinspection JSUnresolvedFunction
-    Compendium2Module.IS_FOUNDRY_V8 = !isNewerVersion(game.version, 9)
-})
 
 Hooks.on('getCompendiumDirectoryEntryContext', async (html, context) => {
     // noinspection JSUnusedGlobalSymbols

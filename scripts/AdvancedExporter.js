@@ -6,7 +6,7 @@ export class AdvancedExporter extends FormApplication {
         if (Compendium2Module.validateFields(formData)) {
             let button = $(".compendium2moduleDialog").find(".buttons > button[type='submit']")
             let icon = button.find("> i")
-            icon.removeClass("fa-save")
+            icon.removeClass("fa-save fa-check")
             icon.addClass("fa-cog fa-spin")
             button.addClass("disabled")
             button.attr("disabled", true)
@@ -43,8 +43,8 @@ export class AdvancedExporter extends FormApplication {
                 if (a.type !== b.type) {
                     return a.type.localeCompare(b.type)
                 }
-                if (a.package !== b.package) {
-                    return a.package.localeCompare(b.package)
+                if (a.packageName !== b.packageName) {
+                    return a.packageName.localeCompare(b.packageName)
                 }
 
                 return a.label.localeCompare(b.label)

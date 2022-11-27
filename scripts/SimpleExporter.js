@@ -11,7 +11,7 @@ export class SimpleExporter extends FormApplication {
     async _updateObject(event, formData) {
         let button = $(".compendium2moduleDialog").find(".buttons > button[type='submit']")
         let icon = button.find("> i")
-        icon.removeClass("fa-save")
+        icon.removeClass("fa-save fa-check")
         icon.addClass("fa-cog fa-spin")
         button.addClass("disabled")
         button.attr("disabled", true)

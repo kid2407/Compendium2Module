@@ -1,7 +1,5 @@
 export class Compendium2Module {
 
-    static IS_FOUNDRY_V8 = false
-
     /**
      * Async for each loop
      *
@@ -20,7 +18,7 @@ export class Compendium2Module {
      */
     static validateFields(formData) {
         let valid = true
-        let id = formData.id
+        let id    = formData.id
 
         if (id.length > 0 && id.match(/[^a-z\d\-_]/)) {
             valid = false
@@ -43,7 +41,7 @@ export class Compendium2Module {
      * @param {boolean} saveToFile If the module should be saved to the local file system
      */
     static async generateZIP(moduleId, moduleJSON, dbData, formApplication, saveToFile) {
-        let zip = new JSZip()
+        let zip       = new JSZip()
         let parentDir = zip.folder(moduleId)
         parentDir.file("module.json", moduleJSON)
         let packsDirectory = parentDir.folder("packs")
@@ -84,7 +82,7 @@ export class Compendium2Module {
 
         zip.generateAsync(
             {
-                type:     "blob",
+                type    : "blob",
                 platform: "UNIX"
             }
         ).then(async content => {
@@ -106,18 +104,17 @@ export class Compendium2Module {
                 await FilePicker.upload('data', moduleDir, new File([new Blob([moduleJSON], {type: "application/json"})], "module.json"), {}, {notify: false})
                 await FilePicker.upload('data', moduleDir, new File([new Blob([content], {type: "application/zip"})], "module-zip.txt"), {}, {notify: false})
 
-                let dialog = $('.compendium2moduleDialog')
+                let dialog       = $('.compendium2moduleDialog')
                 let manifestLink = dialog.find('input.manifestLink')
                 manifestLink.val(new URL(`${window.location.origin}/compendium2module/${moduleId}/module.json`).href)
                 dialog.find('button#cancel').html(`<i class='fas fa-ban'></i>${game.i18n.localize('compendium2module.edit.close')}`)
-                let generateButton = dialog.find('button#generate')
+                let generateButton     = dialog.find('button#generate')
                 let generateButtonIcon = generateButton.find('i')
                 generateButtonIcon.addClass("fa-save")
                 generateButtonIcon.removeClass("fa-cog fa-spin")
                 generateButton.removeClass("disabled")
                 generateButton.attr("disabled", false)
-            }
-            else {
+            } else {
                 saveDataToFile(content, "application/zip", `${moduleId}.zip`)
                 formApplication.close({force: true}).then()
             }
@@ -134,12 +131,12 @@ export class Compendium2Module {
         let path = ''
 
         for (let compendiumEntry of compendiumData) {
-            path = compendiumEntry.data.img
+            path = compendiumEntry.img
             if (!imagePaths.includes(path)) {
                 imagePaths.push(path)
             }
-            if (compendiumEntry.data.type === "character") {
-                path = compendiumEntry.data.token.img
+            if (compendiumEntry.type === "character") {
+                path = compendiumEntry.prototypeToken.texture.src
                 if (!imagePaths.includes(path)) {
                     imagePaths.push(path)
                 }
@@ -157,7 +154,7 @@ export class Compendium2Module {
      * @returns {{images: string[], data: string}}
      */
     static transformCompendiumData(documents, moduleId, includeImages, images = []) {
-        images = includeImages ? Compendium2Module.collectImagePathsFromCompendium(documents, images) : images
+        images           = includeImages ? Compendium2Module.collectImagePathsFromCompendium(documents, images) : images
         let documentData = []
         documents.forEach(d => {
             let json = d.toJSON()
@@ -171,7 +168,7 @@ export class Compendium2Module {
                     try {
                         new URL(json.img)
                     } catch (e) {
-                        json.token.img = `modules/${moduleId}/assets/${json.token.img}`
+                        json.prototypeToken.texture.src = `modules/${moduleId}/assets/${json.prototypeToken.texture.src}`
                     }
                 }
             }
@@ -179,7 +176,7 @@ export class Compendium2Module {
         })
 
         return {
-            "data":   documentData.map(p => JSON.stringify(p)).join("\n"),
+            "data"  : documentData.map(p => JSON.stringify(p)).join("\n"),
             "images": images
         }
     }
@@ -196,12 +193,16 @@ export class Compendium2Module {
         let now = Date.now().toString()
 
         let moduleOptions = {
-            "id":            overrideData.id.length > 0 ? overrideData.id : game.i18n.localize("compendium2module.data.generatedId").replace("<timestamp>", now),
-            "author":        overrideData.author.length > 0 ? overrideData.author : game.user.name,
-            "version":       overrideData.version.length > 0 ? overrideData.version : "1.0.0",
-            "displayName":   overrideData.displayName.length > 0 ? overrideData.displayName : (isSingleCompendium ? compendiums[0].metadata.label : `Generated Module #${now}`),
+            "id"           : overrideData.id.length > 0 ? overrideData.id : game.i18n.localize("compendium2module.data.generatedId").replace("<timestamp>", now),
+            "authors"      : [{
+                "name" : overrideData.author.length > 0 ? overrideData.author : game.user.name,
+                "email": "",
+                "url"  : ""
+            }],
+            "version"      : overrideData.version.length > 0 ? overrideData.version : "1.0.0",
+            "displayName"  : overrideData.displayName.length > 0 ? overrideData.displayName : (isSingleCompendium ? compendiums[0].metadata.label : `Generated Module #${now}`),
             "includeImages": overrideData.includeImages,
-            "saveToFile":    overrideData.saveToFile
+            "saveToFile"   : overrideData.saveToFile
         }
 
         let manifestURL, downloadURL
@@ -209,16 +210,15 @@ export class Compendium2Module {
         if (moduleOptions.saveToFile) {
             manifestURL = (new URL(`${window.location.origin}/compendium2module/${moduleOptions.id}/module.json`)).href
             downloadURL = (new URL(`${window.location.origin}/compendium2module/${moduleOptions.id}/module-zip.txt`)).href
-        }
-        else {
+        } else {
             manifestURL = ""
             downloadURL = ""
         }
 
-        let packs = []
+        let packs  = []
         let dbData = {
             "images": [],
-            "data":   {}
+            "data"  : {}
         }
         let metadata
         let documents
@@ -228,48 +228,41 @@ export class Compendium2Module {
 
         for (let compendium of compendiums) {
             metadata = compendium.metadata
-            if (isSingleCompendium || overrideData[`compendium|${metadata.package}|${metadata.name}`] === true) {
-                packName = `${metadata.package}-${metadata.name}-${now}`
+            if (isSingleCompendium || overrideData[`compendium|${metadata.packageName}|${metadata.name}`] === true) {
+                packName = `${metadata.packageName}-${metadata.name}-${now}`
 
-                if (this.IS_FOUNDRY_V8) {
-                    packs.push({
-                                   "entity": metadata.type,
-                                   "label":  metadata.label,
-                                   "module": moduleOptions.id,
-                                   "path":   `packs/${packName}.db`,
-                                   "name":   `${packName}`
-                               })
-                }
-                else {
-                    packs.push({
-                                   "type":   metadata.type,
-                                   "label":  metadata.label,
-                                   "module": moduleOptions.id,
-                                   "path":   `packs/${packName}.db`,
-                                   "name":   `${packName}`
-                               })
-                }
+                packs.push({
+                    "type"  : metadata.type,
+                    "label" : metadata.label,
+                    "module": moduleOptions.id,
+                    "path"  : `packs/${packName}.db`,
+                    "name"  : `${packName}`,
+                    "system": game.system.id
+                })
 
-                documents = await compendium.getDocuments()
-                transformedData = Compendium2Module.transformCompendiumData(documents, moduleOptions.id, moduleOptions.includeImages, images)
-                images = transformedData.images
+                documents             = await compendium.getDocuments()
+                transformedData       = Compendium2Module.transformCompendiumData(documents, moduleOptions.id, moduleOptions.includeImages, images)
+                images                = transformedData.images
                 dbData.data[packName] = transformedData.data
             }
         }
 
         let moduleJSON = {
-            "name":                  moduleOptions.id,
-            "title":                 moduleOptions.displayName,
-            "description":           game.i18n.localize("compendium2module.json.description").replace("<displayName>", moduleOptions.displayName),
-            "version":               moduleOptions.version,
-            "library":               "false",
-            "manifestPlusVersion":   moduleOptions.version,
-            "minimumCoreVersion":    "9",
-            "compatibleCoreVersion": `${parseInt(game.version)}`,
-            "author":                moduleOptions.author,
-            "packs":                 packs,
-            "manifest":              manifestURL,
-            "download":              downloadURL
+            "name"               : moduleOptions.id,
+            "title"              : moduleOptions.displayName,
+            "description"        : game.i18n.localize("compendium2module.json.description").replace("<displayName>", moduleOptions.displayName),
+            "version"            : moduleOptions.version,
+            "library"            : "false",
+            "manifestPlusVersion": moduleOptions.version,
+            "compatibility"      : {
+                "minimum" : 10,
+                "verified": parseInt(game.version),
+                "maximum" : parseInt(game.version) + 1
+            },
+            "authors"            : moduleOptions.authors,
+            "packs"              : packs,
+            "manifest"           : manifestURL,
+            "download"           : downloadURL
         }
 
         dbData.images = images
@@ -288,8 +281,7 @@ export class Compendium2Module {
         if (navigator.clipboard) {
             await navigator.clipboard.writeText(linkElement.val())
             ui.notifications.info("Copied to clipboard!")
-        }
-        else {
+        } else {
             linkElement.focus()
             linkElement.select()
             try {
@@ -297,8 +289,7 @@ export class Compendium2Module {
                 let success = document.execCommand("copy")
                 if (success) {
                     ui.notifications.info("Copied to clipboard!")
-                }
-                else {
+                } else {
                     ui.notifications.error("Failed to copy to clipboard!")
                 }
             } catch (e) {
