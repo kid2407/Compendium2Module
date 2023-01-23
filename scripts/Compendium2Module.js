@@ -106,7 +106,8 @@ export class Compendium2Module {
 
                 let dialog       = $('.compendium2moduleDialog')
                 let manifestLink = dialog.find('input.manifestLink')
-                manifestLink.val(new URL(`${window.location.origin}/compendium2module/${moduleId}/module.json`).href)
+                const resourcePath = await this.getResourcePath();
+                manifestLink.val(new URL(`${resourcePath}/compendium2module/${moduleId}/module.json`).href)
                 dialog.find('button#cancel').html(`<i class='fas fa-ban'></i>${game.i18n.localize('compendium2module.edit.close')}`)
                 let generateButton     = dialog.find('button#generate')
                 let generateButtonIcon = generateButton.find('i')
@@ -208,8 +209,9 @@ export class Compendium2Module {
         let manifestURL, downloadURL
 
         if (moduleOptions.saveToFile) {
-            manifestURL = (new URL(`${window.location.origin}/compendium2module/${moduleOptions.id}/module.json`)).href
-            downloadURL = (new URL(`${window.location.origin}/compendium2module/${moduleOptions.id}/module-zip.txt`)).href
+            const resourcePath = await this.getResourcePath();
+            manifestURL = (new URL(`${resourcePath}/compendium2module/${moduleOptions.id}/module.json`)).href
+            downloadURL = (new URL(`${resourcePath}/compendium2module/${moduleOptions.id}/module-zip.txt`)).href
         } else {
             manifestURL = ""
             downloadURL = ""
@@ -297,5 +299,20 @@ export class Compendium2Module {
                 ui.notifications.error("Failed to copy to clipboard!")
             }
         }
+    }
+
+    /**
+     * Return a path where resources will be hosted, usually the world host.
+     * Hosting providers or integrations may specify a different path.
+     * @returns {Promise<string>} path
+     * @private
+     */
+    static async getResourcePath() {
+        let path = window.location.origin;
+        // If running on The Forge, link to user's Assets Library
+        if (typeof ForgeVTT !== "undefined" && ForgeVTT.usingTheForge) {
+            path = ForgeVTT.ASSETS_LIBRARY_URL_PREFIX + await ForgeAPI.getUserId();
+        }
+        return path;
     }
 }
