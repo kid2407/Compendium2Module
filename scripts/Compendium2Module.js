@@ -39,8 +39,9 @@ export class Compendium2Module {
      * @param {{data: {string: string}, images: string[]}} dbData The data for the compendiums that are included with the module
      * @param {FormApplication} formApplication
      * @param {boolean} saveToFile If the module should be saved to the local file system
+     * @param {boolean} includeURLImages If images hosted at URLs should be included or filtered out
      */
-    static async generateZIP(moduleId, moduleJSON, dbData, formApplication, saveToFile) {
+    static async generateZIP(moduleId, moduleJSON, dbData, formApplication, saveToFile, includeURLImages) {
         let zip       = new JSZip()
         let parentDir = zip.folder(moduleId)
         parentDir.file("module.json", moduleJSON)
@@ -55,10 +56,16 @@ export class Compendium2Module {
             let assets = parentDir.folder("assets")
             let request
             let imageContent
+            // This will be used to map image URLs back to URL.pathname. This is important because the full URL shouldn't be recreated in the module's assets folder
+            let urlPathMap = {}
 
             await this.asyncForEach(dbData.images.filter((value => {
                 try {
-                    new URL(value)
+                    const imgURL = new URL(value)
+                    if (includeURLImages) {
+                        urlPathMap[value] = imgURL.pathname
+                        return true;
+                    }
                     return false
                 } catch (e) {
                     return true
@@ -71,7 +78,11 @@ export class Compendium2Module {
                         return
                     }
                     imageContent = await request.blob()
-                    assets.file(decodeURI(image), imageContent)
+                    let imageDest = decodeURI(image)
+                    if (includeURLImages && urlPathMap[image]) {
+                        imageDest = decodeURI(urlPathMap[imageDest])
+                    }
+                    assets.file(imageDest, imageContent)
                 } catch (e) {
                     ui.notifications.warn(game.i18n.localize("compendium2module.assets.notFound").replace("<filename>", image))
                 }
@@ -151,23 +162,30 @@ export class Compendium2Module {
      * @param {Document[]} documents
      * @param {string} moduleId
      * @param {boolean} includeImages
+     * @param {boolean} includeURLImages
      * @param {string[]} images
      * @returns {{images: string[], data: string}}
      */
-    static transformCompendiumData(documents, moduleId, includeImages, images = []) {
+    static transformCompendiumData(documents, moduleId, includeImages, includeURLImages, images = []) {
         images           = includeImages ? Compendium2Module.collectImagePathsFromCompendium(documents, images) : images
         let documentData = []
         documents.forEach(d => {
             let json = d.toJSON()
             if (includeImages) {
                 try {
-                    new URL(json.img)
+                    const imgURL = new URL(json.img)
+                    if (includeURLImages) {
+                        json.img = `modules/${moduleId}/assets/${imgURL.pathname}`
+                    }
                 } catch (e) {
                     json.img = `modules/${moduleId}/assets/${json.img}`
                 }
                 if (json.type === "character") {
                     try {
-                        new URL(json.img)
+                        const imgURL = new URL(json.prototypeToken.texture.src)
+                        if (includeURLImages) {
+                            json.prototypeToken.texture.src = `modules/${moduleId}/assets/${imgURL.pathname}`
+                        }
                     } catch (e) {
                         json.prototypeToken.texture.src = `modules/${moduleId}/assets/${json.prototypeToken.texture.src}`
                     }
@@ -203,7 +221,8 @@ export class Compendium2Module {
             "version"      : overrideData.version.length > 0 ? overrideData.version : "1.0.0",
             "displayName"  : overrideData.displayName.length > 0 ? overrideData.displayName : (isSingleCompendium ? compendiums[0].metadata.label : `Generated Module #${now}`),
             "includeImages": overrideData.includeImages,
-            "saveToFile"   : overrideData.saveToFile
+            "saveToFile"   : overrideData.saveToFile,
+            "includeURLImages"   : overrideData.includeURLImages
         }
 
         let manifestURL, downloadURL
@@ -243,7 +262,7 @@ export class Compendium2Module {
                 })
 
                 documents             = await compendium.getDocuments()
-                transformedData       = Compendium2Module.transformCompendiumData(documents, moduleOptions.id, moduleOptions.includeImages, images)
+                transformedData       = Compendium2Module.transformCompendiumData(documents, moduleOptions.id, moduleOptions.includeImages, moduleOptions.includeURLImages, images)
                 images                = transformedData.images
                 dbData.data[packName] = transformedData.data
             }
@@ -272,7 +291,7 @@ export class Compendium2Module {
         ui.notifications.info(game.i18n.localize("compendium2module.info.dataCollected"))
 
         // noinspection JSCheckFunctionSignatures
-        return Compendium2Module.generateZIP(moduleOptions.id, JSON.stringify(moduleJSON, null, 4), dbData, formApplication, moduleOptions.saveToFile)
+        return Compendium2Module.generateZIP(moduleOptions.id, JSON.stringify(moduleJSON, null, 4), dbData, formApplication, moduleOptions.saveToFile, moduleOptions.includeURLImages)
     }
 
     /**
