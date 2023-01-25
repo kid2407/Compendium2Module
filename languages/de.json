@@ -20,7 +20,8 @@
                 "author": "Ersteller",
                 "version": "Version",
                 "includeImages": "Bilder exportieren",
-                "saveToFile": "Manifest-Link generieren"
+                "saveToFile": "Manifest-Link generieren",
+                "includeURLImages": "URL-gehostete Bilder einschließen"
             },
             "cancel": "Abbrechen",
             "close": "Schließen",

@@ -20,7 +20,8 @@
                 "author": "Author",
                 "version": "Version",
                 "includeImages": "Include Images",
-                "saveToFile": "Generate manifest link"
+                "saveToFile": "Generate manifest link",
+                "includeURLImages": "Include URL hosted images"
             },
             "cancel": "Cancel",
             "close": "Close",

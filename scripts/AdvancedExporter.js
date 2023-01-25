@@ -65,5 +65,11 @@ export class AdvancedExporter extends FormApplication {
         html.find("button.copyToClipboard").on("click", async (event) => {
             await Compendium2Module.copyToClipboard(event)
         })
+
+        html.find("input#includeImages").on("click", async (event) => {
+            const includeURLImages = $("input#includeURLImages")[0]
+            includeURLImages.disabled = !event.target.checked
+            if (includeURLImages.disabled) includeURLImages.checked = false;
+        })
     }
 }
